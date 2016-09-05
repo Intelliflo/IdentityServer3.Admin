@@ -10,6 +10,7 @@ namespace IdentityAdmin.Core
     public interface IIdentityAdminService
     {
         Task<IdentityAdminMetadata> GetMetadataAsync();
+        Task<IDictionary<string, object>> UpdateMetadataUrlsAsync(Dictionary<string, object> links);
         Task<IdentityAdminResult<ScopeDetail>> GetScopeAsync(string subject);
         Task<IdentityAdminResult<QueryResult<ScopeSummary>>> QueryScopesAsync(string filter, int start, int count);
         Task<IdentityAdminResult<CreateResult>> CreateScopeAsync(IEnumerable<PropertyValue> properties);
