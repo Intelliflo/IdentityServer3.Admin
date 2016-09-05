@@ -50,7 +50,7 @@ task UpdateVersion {
 	"[assembly: AssemblyFileVersion(""$assemblyFileVersion"")]" >> $versionAssemblyInfoFile
 }
 
-task ILMerge -depends Compile {
+task ILMerge {
 	$input_dlls = "$output_directory\IdentityAdmin.dll"
 
 	Get-ChildItem -Path $output_directory -Filter *.dll |
