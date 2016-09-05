@@ -50,7 +50,7 @@ task UpdateVersion {
 	"[assembly: AssemblyFileVersion(""$assemblyFileVersion"")]" >> $versionAssemblyInfoFile
 }
 
-task ILMerge -depends Compile {
+task ILMerge {
 	$input_dlls = "$output_directory\IdentityAdmin.dll"
 
 	Get-ChildItem -Path $output_directory -Filter *.dll |
@@ -86,4 +86,31 @@ task CreateNuGetPackage -depends ILMerge {
 
 	copy-item $src_directory\Core\IdentityAdmin.nuspec $dist_directory
 	exec { . $nuget_path pack $dist_directory\IdentityAdmin.nuspec -BasePath $dist_directory -o $dist_directory -version $packageVersion }
+}
+
+
+
+task CreateIfloNuGetPackage {
+	$version = "1.0.0.0"
+	$preRelease = "beta9"
+	
+	$vSplit = $version.Split('.')
+	if($vSplit.Length -ne 4)
+	{
+		throw "Version number is invalid. Must be in the form of 0.0.0.0"
+	}
+	$major = $vSplit[0]
+	$minor = $vSplit[1]
+	$patch = $vSplit[2]
+	$packageVersion =  "$major.$minor.$patch"
+	if($preRelease){
+		$packageVersion = "$packageVersion-$preRelease" 
+	}
+
+	if ($buildNumber -ne 0){
+		$packageVersion = $packageVersion + "-build-" + $buildNumber.ToString().PadLeft(5,'0')
+	}
+
+	copy-item $src_directory\Core\IdentityAdmin.iflo.nuspec $dist_directory
+	exec { . $nuget_path pack $dist_directory\IdentityAdmin.iflo.nuspec -BasePath $dist_directory -o $dist_directory -version $packageVersion }
 }

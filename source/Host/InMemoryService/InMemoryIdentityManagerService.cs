@@ -118,6 +118,41 @@ namespace IdentityAdmin.Host.InMemoryService
 
         #region scopes
 
+        public Task<IDictionary<string, object>> UpdateMetadataUrlsAsync(Dictionary<string, object> links)
+        {
+            var newProp = new Dictionary<string, string>();
+
+            foreach (var l in links)
+            {
+                if (l.Value is string)
+                {
+                    // convert to 
+                    newProp[l.Key] = ToHttps(l.Value);
+                }
+
+                if (l.Value is Dictionary<string, object>)
+                {
+                    var dict = l.Value as Dictionary<string, object>;
+
+                    dict["href"] = ToHttps(dict["href"]);
+                }
+            }
+
+            foreach (var k in newProp)
+            {
+                links[k.Key] = k.Value;
+            }
+
+            return Task.FromResult(links as IDictionary<string, object>);
+        }
+
+
+        private string ToHttps(object value)
+        {
+            var str = value.ToString();
+            return $"https://tst-04-identity.test.intelliflo.com{str}";
+        }
+
         public Task<IdentityAdminResult<ScopeDetail>> GetScopeAsync(string subject)
         {
             int parsedId;

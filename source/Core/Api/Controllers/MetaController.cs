@@ -81,11 +81,11 @@ namespace IdentityAdmin.Api.Controllers
             {
                 links["createScope"] = new CreateScopeLink(Url, coreMeta.ScopeMetaData);
             }
-            
+
             return Ok(new
             {
                 Data = data,
-                Links = links
+                Links = await _identityAdminService.UpdateMetadataUrlsAsync(links) 
             });
         }
     }
